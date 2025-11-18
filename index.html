@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Widget Notion - Header</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --card-bg: rgba(15, 23, 42, 0.9);
+      --accent: #38bdf8;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --radius: 18px;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: transparent; /* ajuda a ficar bonito em qualquer fundo */
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      padding: 10px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .card {
+      backdrop-filter: blur(18px);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      text-transform: capitalize;
+    }
+
+    .time-block {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .time {
+      font-size: 2.1rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    .time-label {
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-top: 2px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      margin-right: 8px;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .time-block {
+        text-align: left;
+      }
+
+      .time {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="info">
+        <div class="title" id="widgetTitle">Meu painel</div>
+        <div class="subtitle" id="widgetDate">carregando...</div>
+      </div>
+      <div class="time-block">
+        <div class="time" id="widgetTime">--:--</div>
+        <div class="time-label"><span class="dot"></span><span id="widgetLabel">agora</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lê parâmetros da URL: ?title=Alguma%20coisa&accent=%23ff0000
+    const params = new URLSearchParams(window.location.search);
+
+    const titleParam = params.get("title");
+    const accentParam = params.get("accent");
+    const labelParam = params.get("label");
+
+    if (titleParam) {
+      document.getElementById("widgetTitle").textContent = titleParam;
+    }
+
+    if (accentParam) {
+      document.documentElement.style.setProperty("--accent", accentParam);
+    }
+
+    if (labelParam) {
+      document.getElementById("widgetLabel").textContent = labelParam;
+    }
+
+    function capitalizeFirst(str) {
+      if (!str) return "";
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+
+      const time = now.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      const date = now.toLocaleDateString("pt-BR", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+
+      document.getElementById("widgetTime").textContent = time;
+      document.getElementById("widgetDate").textContent = capitalizeFirst(date);
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+  </script>
+</body>
+</html>
